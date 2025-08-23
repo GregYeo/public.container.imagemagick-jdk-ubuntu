@@ -68,4 +68,5 @@ RUN apt update -y && \
 # Validate installations
 RUN ldconfig && \
     magick -version && \
-    java -version
+    magick identify -list format && \
+    java -version \

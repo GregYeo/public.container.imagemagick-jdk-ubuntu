@@ -36,9 +36,9 @@ RUN curl -LO https://imagemagick.org/archive/releases/ImageMagick-${IMAGEMAGICK_
     make -j$(nproc) && \
     make install
 
-RUN ldconfig
-
-RUN magick -version && magick identify -list format
+RUN ldconfig && \
+    magick -version && \
+    magick identify -list format
 
 # Install Amazon Corretto 21 LTS
 RUN curl https://apt.corretto.aws/corretto.key | gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg && \

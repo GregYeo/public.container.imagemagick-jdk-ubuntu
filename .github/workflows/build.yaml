@@ -31,10 +31,11 @@ jobs:
           REPO_LOWERCASE=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
           echo "repo_name=ghcr.io/$REPO_LOWERCASE" >> $GITHUB_OUTPUT
 
-      - name: Build
+      - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           pull: true
-          push: false
-          tags: ${{ steps.repo_name_step.outputs.repo_name }}:local
+          push: true
+          tags: |
+            ghcr.io/${{ steps.repo_name_step.outputs.repo_name }}:${{ github.sha }}"

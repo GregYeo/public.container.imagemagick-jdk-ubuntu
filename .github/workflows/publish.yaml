@@ -33,7 +33,7 @@ jobs:
         id: repo_name_step
         run: |
           REPO_LOWERCASE=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
-          echo "repo_name=ghcr.io/$REPO_LOWERCASE:local-build" >> $GITHUB_OUTPUT
+          echo "repo_name=ghcr.io/$REPO_LOWERCASE" >> $GITHUB_OUTPUT
 
       - name: Build and push
         uses: docker/build-push-action@v6

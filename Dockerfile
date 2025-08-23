@@ -45,5 +45,5 @@ RUN curl https://apt.corretto.aws/corretto.key | gpg --dearmor -o /usr/share/key
     echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | tee /etc/apt/sources.list.d/corretto.list && \
     apt update -y && \
     apt install -y java-21-amazon-corretto-jdk && \
+    apt clean all && \
     java -version
-

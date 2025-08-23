@@ -6,6 +6,9 @@ on:
 
 jobs:
   container-image-builder:
+    strategy:
+      matrix:
+        platform: [ linux/amd64, linux/arm64 ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -38,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platform }}
           pull: true
           push: true
           tags: |

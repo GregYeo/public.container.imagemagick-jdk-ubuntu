@@ -7,6 +7,9 @@ on:
 jobs:
   container-image-builder:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Collect Workflow Telemetry
         uses: catchpoint/workflow-telemetry-action@v2

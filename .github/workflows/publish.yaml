@@ -6,7 +6,7 @@ on:
       - '*'
 
 jobs:
-  container-image-pusher:
+  build-and-push-platform:
     strategy:
       matrix:
         include:

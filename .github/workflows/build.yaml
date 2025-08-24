@@ -5,14 +5,16 @@ on:
   pull_request:
 
 jobs:
-  container-image-builder:
+  build-and-push-platform:
     strategy:
       matrix:
         include:
           - platform: linux/amd64
             runner: ubuntu-latest
+            platform-tag: linux-amd64
           - platform: linux/arm64
             runner: ubuntu-24.04-arm
+            platform-tag: linux-arm64
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
@@ -49,4 +51,42 @@ jobs:
           pull: true
           push: true
           tags: |
-            ${{ steps.repo_name_step.outputs.repo_name }}:${{ github.sha }}
+            ${{ steps.repo_name_step.outputs.repo_name }}:${{ github.sha }}-${{ matrix.platform-tag }}
+          outputs: type=image,name=${{ steps.repo_name_step.outputs.repo_name }},push-by-digest=true,name-canonical=true,push=true
+
+  create-manifest:
+    name: Create Multi-arch Manifest
+    runs-on: ubuntu-latest
+    needs: build-and-push-platform
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract repo name
+        id: repo_name_step
+        run: |
+          REPO_LOWERCASE=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+          echo "repo_name=ghcr.io/$REPO_LOWERCASE" >> $GITHUB_OUTPUT
+
+      - name: Create manifest list and push
+        run: |
+          REPO_NAME=${{ steps.repo_name_step.outputs.repo_name }}
+          TAG_NAME="${{ steps.repo_name_step.outputs.repo_name }}:${{ github.sha }}"
+          
+          docker buildx imagetools create \
+            -t "$REPO_NAME:$TAG_NAME" \
+            "$REPO_NAME:$TAG_NAME-linux-amd64" \
+            "$REPO_NAME:$TAG_NAME-linux-arm64"

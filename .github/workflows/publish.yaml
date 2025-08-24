@@ -54,6 +54,8 @@ jobs:
           tags: |
             ${{ steps.repo_name_step.outputs.repo_name }}:${{ github.ref_name }}-${{ matrix.platform-tag }}
           outputs: type=image,name=${{ steps.repo_name_step.outputs.repo_name }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=registry,ref=${{ steps.repo_name_step.outputs.repo_name }}:buildcache
+          cache-to: type=registry,ref=${{ steps.repo_name_step.outputs.repo_name }}:buildcache,mode=max
 
   create-manifest:
     name: Create Multi-arch Manifest

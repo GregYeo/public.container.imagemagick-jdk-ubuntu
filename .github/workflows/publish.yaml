@@ -50,4 +50,4 @@ jobs:
           pull: true
           push: true
           tags: |
-            ghcr.io/${{ steps.repo_name_step.outputs.repo_name }}:${{ github.ref_name }}
+            ${{ steps.repo_name_step.outputs.repo_name }}:${{ github.ref_name }}

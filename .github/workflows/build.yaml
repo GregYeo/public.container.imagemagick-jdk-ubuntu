@@ -85,7 +85,7 @@ jobs:
       - name: Create manifest list and push
         run: |
           REPO_NAME=${{ steps.repo_name_step.outputs.repo_name }}
-          TAG_NAME="${{ steps.repo_name_step.outputs.repo_name }}:${{ github.sha }}"
+          TAG_NAME=${{ github.sha }}
           
           docker buildx imagetools create \
             -t "$REPO_NAME:$TAG_NAME" \
